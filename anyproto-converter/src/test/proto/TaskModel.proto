@@ -1,0 +1,19 @@
+package fr.clouddev.protobuf.converter;
+
+option java_package="fr.clouddev.protobuf.converter.proto";
+
+import "test.proto";
+
+message Task {
+	optional string id = 1;
+	optional string name = 2;
+	optional bool done = 3;
+	optional User owner = 4;
+}
+
+message Project {
+	optional string id = 1;
+	optional string name = 2;
+	repeated Task tasks = 3;
+	optional User owner = 4;
+}

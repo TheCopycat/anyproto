@@ -1,0 +1,30 @@
+package fr.clouddev.anyproto.core;
+
+option optimize_for= SPEED;
+option java_package= "fr.clouddev.anyproto.core.test";
+
+message User {
+	required string email = 1;
+	optional string name = 2;
+	optional int32 age = 3;
+}
+
+enum EnumField {
+	VALUE1 = 1;
+	VALUE2 = 2;
+}
+
+message SubMessage {
+	required int32 id = 1;
+	optional string name = 2;
+}
+
+message TemplateMessage {
+	optional int32 intField = 1;
+	optional int64 longField = 2;
+	optional string textField = 3;
+	optional EnumField enumField = 4;
+	optional bool boolField = 5;
+	repeated string repeatedfield = 6;
+	optional SubMessage subMessage = 7;
+}

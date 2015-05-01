@@ -1,0 +1,9 @@
+package fr.clouddev.protobuf.converter;
+
+option java_package= "fr.clouddev.protobuf.converter.proto";
+
+message User {
+	required string email = 1;
+	optional string name = 2;
+	optional int32 age = 3;
+}
