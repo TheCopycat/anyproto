@@ -4,7 +4,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.protobuf.ByteString;
 import fr.clouddev.anyproto.core.builder.JsonBuilder;
+import fr.clouddev.anyproto.core.reader.XmlReader;
 import junit.framework.TestCase;
 import fr.clouddev.anyproto.core.test.Test.*;
 import org.junit.Test;
@@ -23,14 +25,16 @@ public class AnyProtoTest extends TestCase {
 
     static Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-    static String templateJson = "{\"intField\":12345,\"longField\":123456789012345,\"textField\":\"string 1\",\"enumField\":\"VALUE2\",\"boolField\":true,\"repeatedfield\":[\"value 1\",\"value 2\"],\"subMessage\":{\"id\":325,\"name\":\"lolà\"}}";
-    static String templateXml = "<TemplateMessage><intField>12345</intField><longField>123456789012345</longField><textField>string 1</textField><enumField>VALUE2</enumField><boolField>true</boolField><repeatedfield>value 1</repeatedfield><repeatedfield>value 2</repeatedfield><subMessage><id>325</id><name>lolà</name></subMessage></TemplateMessage>";
+    static String templateJson = "{\"intField\":12345,\"longField\":123456789012345,\"textField\":\"string 1\",\"enumField\":\"VALUE2\",\"boolField\":true,\"repeatedfield\":[\"value 1\",\"value 2\"],\"subMessage\":{\"id\":325,\"name\":\"lolà\"},\"byteMessage\":\"AAQIDBA=\"}";
+    static String templateXml = "<TemplateMessage><intField>12345</intField><longField>123456789012345</longField><textField>string 1</textField><enumField>VALUE2</enumField><boolField>true</boolField><repeatedfield>value 1</repeatedfield><repeatedfield>value 2</repeatedfield><subMessage><id>325</id><name>lolà</name></subMessage><byteMessage>AAQIDBA=</byteMessage></TemplateMessage>";
 
     static User referenceUser = User.newBuilder()
             .setEmail("toto@toto.fr")
             .setName("toto")
             .setAge(25)
             .build();
+
+    static byte[] data = new byte[]{0x00,0x04,0x08,0x0C,0x10};
     
     static TemplateMessage referenceMessage = TemplateMessage.newBuilder()
             .setBoolField(true)
@@ -43,6 +47,7 @@ public class AnyProtoTest extends TestCase {
             .setSubMessage(SubMessage.newBuilder()
                 .setId(325)
                 .setName("lolà").build())
+            .setByteMessage(ByteString.copyFrom(data))
             .build();
     
     @Test
@@ -103,6 +108,9 @@ public class AnyProtoTest extends TestCase {
         TemplateMessage message = templateAnyProto.fromXml(templateXml);
         assertEquals(referenceMessage, message);
         assertEquals(templateXml, templateAnyProto.toXml(message));
+        XmlReader<TemplateMessage> reader = new XmlReader<>(TemplateMessage.class);
+        message = reader.getObject(new ByteArrayInputStream(templateXml.getBytes()));
+        assertEquals(referenceMessage,message);
     }
 
     @Test
@@ -151,8 +159,8 @@ public class AnyProtoTest extends TestCase {
     }
 
     public void assertEquals(TemplateMessage expected, TemplateMessage actual) {
-        assertNotSame(expected,actual);
-        assertTrue(expected.equals(actual));
+        assertNotSame(expected, actual);
+        assertEquals((Object)expected,(Object)actual);
     }
 
 }

@@ -27,4 +27,5 @@ message TemplateMessage {
 	optional bool boolField = 5;
 	repeated string repeatedfield = 6;
 	optional SubMessage subMessage = 7;
+	optional bytes byteMessage = 8;
 }

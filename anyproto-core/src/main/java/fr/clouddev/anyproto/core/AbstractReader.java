@@ -21,10 +21,6 @@ public abstract class AbstractReader<T extends Message> {
 
     }
 
-    public AbstractReader(T.Builder builder) {
-        this.clazz = (Class<T>)builder.getClass().getEnclosingClass();
-    }
-
     protected ProtobufBuilder<T> newBuilder() {
         try {
             T.Builder builder = (T.Builder)clazz.getDeclaredMethod("newBuilder").invoke(null);

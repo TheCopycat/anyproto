@@ -1,8 +1,10 @@
 package fr.clouddev.anyproto.core.builder;
 
+import com.google.protobuf.ByteString;
 import com.google.protobuf.Descriptors;
 import com.google.protobuf.Message;
 
+import java.util.Base64;
 import java.util.Map;
 
 /**
@@ -65,8 +67,7 @@ public class XmlBuilder<T extends Message> {
                 XmlBuilder<Message> parser = new XmlBuilder<>(item);
                 return parser.toXml(false);
             case BYTES:
-                //TODO find a way
-                break;
+                return Base64.getEncoder().encodeToString(((ByteString)value).toByteArray());
             case ENUM:
                 return value.toString();
             case STRING:

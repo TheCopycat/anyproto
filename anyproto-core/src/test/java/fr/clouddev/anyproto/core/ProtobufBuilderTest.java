@@ -6,78 +6,95 @@ import junit.framework.TestCase;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Base64;
+
 /**
  * Created by CopyCat on 30/04/15.
  */
 public class ProtobufBuilderTest extends TestCase {
 
-    ProtobufBuilder<TemplateMessage> parser;
+    ProtobufBuilder<TemplateMessage> builder;
 
     @Before
     public void setUp() {
-        parser = new ProtobufBuilder<>(TemplateMessage.newBuilder());
+        builder = new ProtobufBuilder<>(TemplateMessage.newBuilder());
     }
 
     @Test
     public void testSetBoolean() {
-        parser = parser.setField("boolfield","true");
-        TemplateMessage message = parser.getObject();
+        builder = builder.setField("boolfield","true");
+        TemplateMessage message = builder.getObject();
         assertEquals(true,message.getBoolField());
     }
 
     @Test
     public void testSetInteger() {
-        parser = parser.setField("iNtFiEld","12345");
-        TemplateMessage message = parser.getObject();
+        builder = builder.setField("iNtFiEld","12345");
+        TemplateMessage message = builder.getObject();
         assertEquals(12345,message.getIntField());
 
     }
 
     @Test
     public void testSetString(){
-        parser = parser.setField("textField","this is a string");
-        TemplateMessage message = parser.getObject();
+        builder = builder.setField("textField","this is a string");
+        TemplateMessage message = builder.getObject();
         assertEquals("this is a string",message.getTextField());
     }
 
     @Test
     public void testSetLong() {
-        parser = parser.setField("longfiELD","123456789012345");
-        TemplateMessage message = parser.getObject();
+        builder = builder.setField("longfiELD","123456789012345");
+        TemplateMessage message = builder.getObject();
         assertEquals(123456789012345L,message.getLongField());
     }
 
     @Test
     public void testSetEnum() {
-        parser = parser.setField("enumfield","vAlUe1");
-        TemplateMessage message = parser.getObject();
-        assertEquals(EnumField.VALUE1,message.getEnumField());
+        builder = builder.setField("enumfield","vAlUe1");
+        TemplateMessage message = builder.getObject();
+        assertEquals(EnumField.VALUE1, message.getEnumField());
 
-        parser = parser.setField("enumfield","2");
-        message = parser.getObject();
+        builder = builder.setField("enumfield","2");
+        message = builder.getObject();
         assertEquals(EnumField.VALUE2,message.getEnumField());
     }
 
     @Test
     public void testRepeated() {
-        parser = parser.setField("repeatedfield","value 1");
-        parser = parser.setField("repeaTeDField","value 2");
-        TemplateMessage message = parser.getObject();
+        builder = builder.setField("repeatedfield","value 1");
+        builder = builder.setField("repeaTeDField","value 2");
+        TemplateMessage message = builder.getObject();
         assertEquals(message.getRepeatedfield(0),"value 1");
         assertEquals(message.getRepeatedfield(1),"value 2");
     }
 
     @Test
     public void testSubItem() {
-        parser.setField("submessage",SubMessage.newBuilder().setId(325).setName("lolà").build());
-        TemplateMessage message = parser.getObject();
+        builder.setField("submessage", SubMessage.newBuilder().setId(325).setName("lolà").build());
+        TemplateMessage message = builder.getObject();
         assertEquals(325,message.getSubMessage().getId());
         assertEquals("lolà",message.getSubMessage().getName());
     }
 
     @Test
+    public void testByteElement() {
+        byte[] data = new byte[]{0x00,0x04,0x08,0x0C,0x10};
+        String dataString = Base64.getEncoder().encodeToString(data);
+        builder.setField("byteMessage", dataString);
+        TemplateMessage message = builder.getObject();
+        byte[] byteMessage = message.getByteMessage().toByteArray();
+        assertEquals(data.length,byteMessage.length);
+        int index = 0;
+        for (byte b: data ){
+            assertEquals(b,byteMessage[index]);
+            index++;
+        }
+    }
+
+    @Test
     public void testSetUnknownField() {
-        parser.setField("unknownfield","empty value");
+        builder.setField("unknownfield", "empty value");
     }
 
 }

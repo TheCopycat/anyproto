@@ -4,11 +4,13 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import com.google.protobuf.ByteString;
 import com.google.protobuf.Descriptors;
 import com.google.protobuf.Message;
 import com.google.protobuf.WireFormat;
 
 
+import java.util.Base64;
 import java.util.Map;
 
 /**
@@ -76,8 +78,8 @@ public class JsonBuilder<T extends Message> {
                 return parser.toJson();
 
             case BYTES:
-                //TODO find a way
-                break;
+                String data = Base64.getEncoder().encodeToString(((ByteString)value).toByteArray());
+                return new JsonPrimitive(data);
 
             case ENUM:
             case STRING:
@@ -87,44 +89,4 @@ public class JsonBuilder<T extends Message> {
         return null;
     }
 
-    private void setJsonValue(JsonObject json, Descriptors.FieldDescriptor field) {
-        switch (field.getLiteType()) {
-
-            case DOUBLE:
-            case FLOAT:
-            case INT64:
-            case FIXED64:
-            case UINT64:
-            case SFIXED64:
-            case SINT64:
-            case FIXED32:
-            case INT32:
-            case UINT32:
-            case SFIXED32:
-            case SINT32:
-                json.addProperty(field.getName(),(Number)fields.get(field));
-                break;
-            case BOOL:
-                json.addProperty(field.getName(),(Boolean)fields.get(field));
-                break;
-            case GROUP:
-            case MESSAGE:
-                Message item = (Message)fields.get(field);
-                JsonBuilder<Message> parser = new JsonBuilder<>(item);
-                json.add(field.getName(),parser.toJson());
-                break;
-            case BYTES:
-                //TODO find a way
-
-                break;
-            case ENUM:
-            case STRING:
-                json.addProperty(field.getName(),fields.get(field).toString());
-                break;
-        }
-    }
-
-    public String getXmlValue(String name) {
-        return "<"+name+">"+"</"+name+">";
-    }
 }
