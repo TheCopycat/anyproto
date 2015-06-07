@@ -1,0 +1,20 @@
+apply plugin:'java'
+apply plugin: 'maven-publish'
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            groupId='fr.clouddev.anyproto'
+            artifactId='anyproto'
+            from components.java
+        }
+    }
+}
+
+group = 'fr.clouddev.anyproto'
+
+version= '0.1-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
