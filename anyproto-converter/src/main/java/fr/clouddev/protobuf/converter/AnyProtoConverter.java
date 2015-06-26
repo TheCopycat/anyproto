@@ -4,6 +4,7 @@ import com.google.protobuf.Message;
 import fr.clouddev.anyproto.core.AnyProto;
 import fr.clouddev.anyproto.core.reader.JsonReader;
 import fr.clouddev.anyproto.core.reader.XmlReader;
+import retrofit.RestAdapter;
 import retrofit.converter.ConversionException;
 import retrofit.converter.Converter;
 import retrofit.mime.TypedInput;
@@ -15,6 +16,8 @@ import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Created by CopyCat on 27/04/15.
@@ -45,16 +48,17 @@ public class AnyProtoConverter implements Converter
         if (!(type instanceof Class<?>)) {
             throw new IllegalArgumentException("Expected a raw Class<?> but was " + type);
         }
+
         Class<? extends Message> c = (Class<? extends Message>) type;
         AnyProto anyProto = new AnyProto(c);
         try {
-            if (MEDIA_TYPE_JSON.equals(body.mimeType())) {
+            if (body.mimeType()!= null && body.mimeType().contains(MEDIA_TYPE_JSON)) {
                 return new JsonReader(c).getObject(body.in());
             }
-            if (MEDIA_TYPE_XML.equals(body.mimeType())) {
+            if (body.mimeType()!= null && body.mimeType().contains(MEDIA_TYPE_XML)) {
                 return new XmlReader(c).getObject(body.in());
             }
-            if (MEDIA_TYPE_PROTOBUF.equals(body.mimeType())) {
+            if (body.mimeType()!= null && body.mimeType().contains(MEDIA_TYPE_PROTOBUF)) {
                 return anyProto.convert(body.in());
             }
         } catch (Exception ioe) {

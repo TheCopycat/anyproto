@@ -1,0 +1,19 @@
+package fr.clouddev.anyproto.sample;
+
+option java_package= "fr.clouddev.anyproto.sample.proto";
+
+message Account {
+	optional string login = 1;
+	optional string password = 2;
+	optional string firstName = 3;
+	optional string lastName = 4;
+	optional string email = 5;
+	optional string langKey = 6;
+	repeated string roles =7;
+
+}
+
+message Auth {
+	required string token = 1;
+	required int64 expires = 2;
+}

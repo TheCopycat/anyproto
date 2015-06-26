@@ -3,4 +3,5 @@ rootProject.name = 'anyproto'
 include 'anyproto-converter'
 
 include 'anyproto-core'
+include 'anyproto-sample'
 
