@@ -2,11 +2,12 @@ package fr.clouddev.anyproto.sample;
 
 import fr.clouddev.anyproto.sample.proto.Jhipster;
 import fr.clouddev.protobuf.converter.AnyProtoConverter;
+import retrofit.Callback;
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
-import retrofit.http.GET;
-import retrofit.http.POST;
-import retrofit.http.Query;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+import retrofit.http.*;
 
 import java.util.List;
 
@@ -27,6 +28,9 @@ public class Main {
 
         @GET("/api/logs")
         List<Jhipster.Log> getLogs();
+
+        @PUT("/api/logs")
+        Jhipster.Log putLogs(@Body Jhipster.Log log);
     }
 
     private static class TokenInterceptor implements RequestInterceptor {
@@ -71,5 +75,9 @@ public class Main {
         for (Jhipster.Log log : logs) {
             System.out.println("log : "+log);
         }
+
+        Jhipster.Log log = Jhipster.Log.newBuilder().setName("fr.clouddev").setLevel("DEBUG").build();
+        Jhipster.Log resultLog = service.putLogs(log);
+        System.out.println("Result log : " + resultLog);
     }
 }
