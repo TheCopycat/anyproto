@@ -11,16 +11,19 @@ message Account {
 	optional string langKey = 6;
 	repeated string roles = 7;
 	optional string createdBy = 8;
-	optional string createdDate = 9;
+	optional int64 createdDate = 9;
 	optional string lastModifiedBy = 10;
-	optional string lastModifiedDate = 11;
+	optional int64 lastModifiedDate = 11;
 	optional string id = 12;
 	optional bool activated = 13;
 	optional string activationKey = 14;
 
 }
 
-
+message Log {
+	optional string name = 1;
+	optional string level = 2;
+}
 
 message Auth {
 	required string token = 1;

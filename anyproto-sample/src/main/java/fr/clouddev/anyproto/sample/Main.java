@@ -24,6 +24,9 @@ public class Main {
 
         @GET("/api/users")
         List<Jhipster.Account> getUsers();
+
+        @GET("/api/logs")
+        List<Jhipster.Log> getLogs();
     }
 
     private static class TokenInterceptor implements RequestInterceptor {
@@ -61,6 +64,12 @@ public class Main {
         System.out.println("User list");
         for (Jhipster.Account user : users) {
             System.out.println("user : "+user);
+        }
+
+        List<Jhipster.Log> logs = service.getLogs();
+        System.out.println("Log list : ");
+        for (Jhipster.Log log : logs) {
+            System.out.println("log : "+log);
         }
     }
 }
