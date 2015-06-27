@@ -8,6 +8,8 @@ import retrofit.http.GET;
 import retrofit.http.POST;
 import retrofit.http.Query;
 
+import java.util.List;
+
 /**
  * Created by CopyCat on 19/06/15.
  */
@@ -20,6 +22,8 @@ public class Main {
         @POST("/api/authenticate")
         Jhipster.Auth authenticate(@Query("username") String username, @Query("password") String password);
 
+        @GET("/api/users")
+        List<Jhipster.Account> getUsers();
     }
 
     private static class TokenInterceptor implements RequestInterceptor {
@@ -52,5 +56,11 @@ public class Main {
         System.out.println("auth : "+auth.toString());
         Jhipster.Account acc = service.getAccount();
         System.out.println("acc : "+acc.toString());
+
+        List<Jhipster.Account> users = service.getUsers();
+        System.out.println("User list");
+        for (Jhipster.Account user : users) {
+            System.out.println("user : "+user);
+        }
     }
 }
