@@ -8,6 +8,8 @@ import fr.clouddev.anyproto.core.builder.ProtobufBuilder;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -61,6 +63,19 @@ public class JsonReader<T extends Message> extends AbstractReader<T> {
         return protoBuilder.getObject();
     }
 
+    protected List<T> getRepeated(JsonArray array) {
+        List<T> result = new ArrayList<>();
+        for (JsonElement element: array) {
+            JsonObject object = element.getAsJsonObject();
+            ProtobufBuilder<T> protoBuilder= newBuilder();
+            for (Map.Entry<String,JsonElement> entry: object.entrySet()) {
+                parseElement(protoBuilder,entry.getKey(),entry.getValue());
+            }
+            result.add(protoBuilder.getObject());
+        }
+        return result;
+    }
+
     protected void parseElement(ProtobufBuilder protoBuilder,String name, JsonElement element) {
         switch (JsonType.getType(element.getClass())) {
             case PRIMITIVE:
@@ -91,6 +106,23 @@ public class JsonReader<T extends Message> extends AbstractReader<T> {
     public T getObject(byte[] data) {
         JsonObject jsonObject = jsonParser.parse(new InputStreamReader(new ByteArrayInputStream(data))).getAsJsonObject();
         return getObject(jsonObject);
+    }
+
+    public List<T> getRepeated(InputStream input) {
+        JsonArray jsonArray = jsonParser.parse(new InputStreamReader(input)).getAsJsonArray();
+        return getRepeated(jsonArray);
+    }
+
+    @Override
+    public List<T> getRepeated(String dataStr) {
+        JsonArray jsonArray = jsonParser.parse(new InputStreamReader(new ByteArrayInputStream(dataStr.getBytes()))).getAsJsonArray();
+        return getRepeated(jsonArray);
+    }
+
+    @Override
+    public List<T> getRepeated(byte[] data) {
+        JsonArray jsonArray = jsonParser.parse(new InputStreamReader(new ByteArrayInputStream(data))).getAsJsonArray();
+        return getRepeated(jsonArray);
     }
 
 }

@@ -9,6 +9,7 @@ import fr.clouddev.anyproto.core.reader.XmlReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 /**
  * Created by CopyCat on 29/04/15.
@@ -66,5 +67,15 @@ public class AnyProto<T extends Message> {
 
     public T fromXml(String xmlString) {
         return new XmlReader<>(clazz).getObject(xmlString);
+    }
+
+    public List<T> fromJsonList(String jsonString) {
+        JsonReader<T> reader = new JsonReader<>(clazz);
+        return reader.getRepeated(jsonString);
+    }
+
+    public List<T> fromXmlList(String xmlString) {
+        XmlReader<T> reader = new XmlReader<>(clazz);
+        return reader.getRepeated(xmlString);
     }
 }

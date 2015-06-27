@@ -13,6 +13,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by CopyCat on 01/05/15.
@@ -63,6 +65,37 @@ public class XmlReader<T extends Message> extends AbstractReader<T> {
             e.printStackTrace();
         }
         return null;
+    }
+
+    @Override
+    public List<T> getRepeated(InputStream input) {
+        try {
+            return getRepeated(documentBuilder.parse(input).getDocumentElement());
+        } catch (SAXException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public List<T> getRepeated(String dataStr) {
+        return getRepeated(dataStr.getBytes());
+    }
+
+    @Override
+    public List<T> getRepeated(byte[] data) {
+        return getRepeated(new ByteArrayInputStream(data));
+    }
+
+    protected List<T> getRepeated(Node element) {
+        List<T> result = new ArrayList<>();
+        NodeList nodeList = element.getChildNodes();
+        for (int nodeIndex = 0; nodeIndex < nodeList.getLength(); nodeIndex++) {
+            result.add(getObject(nodeList.item(nodeIndex)));
+        }
+        return result;
     }
 
     public T getObject(Node element) {

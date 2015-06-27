@@ -7,6 +7,7 @@ import fr.clouddev.anyproto.core.builder.ProtobufBuilder;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -41,4 +42,12 @@ public abstract class AbstractReader<T extends Message> {
     public abstract T getObject(String dataStr);
 
     public abstract T getObject(byte[] data);
+
+    public abstract List<T> getRepeated(InputStream input);
+
+    public abstract List<T> getRepeated(String dataStr);
+
+    public abstract List<T> getRepeated(byte[] data);
+
+
 }

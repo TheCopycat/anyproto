@@ -12,6 +12,8 @@ import fr.clouddev.anyproto.core.test.Test.*;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by CopyCat on 29/04/15.
@@ -23,6 +25,8 @@ public class AnyProtoTest extends TestCase {
     static String userJson =  "{\"email\":\"toto@toto.fr\",\"name\":\"toto\",\"age\":25}";
     static String userXml = "<User><email>toto@toto.fr</email><name>toto</name><age>25</age></User>";
 
+    static String listUserXml = "<Users>"+userXml+userXml+"</Users>";
+    static String listUserJson = "["+userJson+","+userJson+"]";
     static Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     static String templateJson = "{\"intField\":12345,\"longField\":123456789012345,\"textField\":\"string 1\",\"enumField\":\"VALUE2\",\"boolField\":true,\"repeatedfield\":[\"value 1\",\"value 2\"],\"subMessage\":{\"id\":325,\"name\":\"lolà\"},\"byteMessage\":\"AAQIDBA=\"}";
@@ -33,6 +37,11 @@ public class AnyProtoTest extends TestCase {
             .setName("toto")
             .setAge(25)
             .build();
+    static List<User> referenceUserList = new ArrayList<>();
+    static {
+        referenceUserList.add(referenceUser);
+        referenceUserList.add(referenceUser);
+    }
 
     static byte[] data = new byte[]{0x00,0x04,0x08,0x0C,0x10};
     
@@ -89,6 +98,17 @@ public class AnyProtoTest extends TestCase {
     }
 
     @Test
+    public void testConvertFromJsonList() {
+        List<User> users = anyProto.fromJsonList(listUserJson);
+        assertNotSame(referenceUserList,users);
+        assertEquals(referenceUserList.size(),users.size());
+        for(int i=0; i< users.size();i++) {
+            assertNotSame(referenceUserList.get(i),users.get(i));
+            assertEquals(referenceUserList.get(i), users.get(i));
+        }
+    }
+
+    @Test
     public void testConvertToJson() {
         String jsonString = anyProto.toJsonString(referenceUser);
         JsonObject json = new JsonBuilder<User>(referenceUser).toJson();
@@ -111,6 +131,17 @@ public class AnyProtoTest extends TestCase {
         XmlReader<TemplateMessage> reader = new XmlReader<>(TemplateMessage.class);
         message = reader.getObject(new ByteArrayInputStream(templateXml.getBytes()));
         assertEquals(referenceMessage,message);
+    }
+
+    @Test
+    public void testConvertFromXmlList() {
+        List<User> users = anyProto.fromXmlList(listUserXml);
+        assertNotSame(referenceUserList,users);
+        assertEquals(referenceUserList.size(),users.size());
+        for(int i=0; i< users.size();i++) {
+            assertNotSame(referenceUserList.get(i),users.get(i));
+            assertEquals(referenceUserList.get(i),users.get(i));
+        }
     }
 
     @Test
