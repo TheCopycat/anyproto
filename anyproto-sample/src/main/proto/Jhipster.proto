@@ -29,3 +29,15 @@ message Auth {
 	required string token = 1;
 	required int64 expires = 2;
 }
+
+message Data {
+	optional string type = 1;
+	optional string message = 2;
+}
+
+message Audit {
+	optional int64 timestamp = 1;
+	optional string principal = 2;
+	optional string type = 3;
+	optional Data data = 4;
+}

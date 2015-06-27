@@ -2,11 +2,8 @@ package fr.clouddev.anyproto.sample;
 
 import fr.clouddev.anyproto.sample.proto.Jhipster;
 import fr.clouddev.protobuf.converter.AnyProtoConverter;
-import retrofit.Callback;
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 import retrofit.http.*;
 
 import java.util.List;
@@ -31,6 +28,12 @@ public class Main {
 
         @PUT("/api/logs")
         Jhipster.Log putLogs(@Body Jhipster.Log log);
+
+        @GET("/api/audits/all")
+        List<Jhipster.Audit> getAllAudits();
+
+        @GET("/api/audits/byDates")
+        List<Jhipster.Audit> getAuditsByDate(@Query("fromDate")String from, @Query("toDate") String to);
     }
 
     private static class TokenInterceptor implements RequestInterceptor {
@@ -79,5 +82,20 @@ public class Main {
         Jhipster.Log log = Jhipster.Log.newBuilder().setName("fr.clouddev").setLevel("DEBUG").build();
         Jhipster.Log resultLog = service.putLogs(log);
         System.out.println("Result log : " + resultLog);
+
+        List<Jhipster.Audit> allAudits = service.getAllAudits();
+        System.out.println("audits : ");
+        for (Jhipster.Audit audit : allAudits) {
+            System.out.println("audit : "+audit);
+            if (audit.hasData()) {
+                System.out.println(audit.getData().getMessage());
+            }
+        }
+
+        List<Jhipster.Audit> auditsByDate = service.getAuditsByDate("2015-06-22","2015-06-28");
+        System.out.println("Audits By Date : ");
+        for (Jhipster.Audit audit : auditsByDate) {
+            System.out.println("audit : "+audit);
+        }
     }
 }
