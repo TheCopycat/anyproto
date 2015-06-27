@@ -23,6 +23,9 @@ public class Main {
         @GET("/api/users")
         List<Jhipster.Account> getUsers();
 
+        @GET("/api/users/{login}")
+        Jhipster.Account getUser(@Path("login") String login);
+
         @GET("/api/logs")
         List<Jhipster.Log> getLogs();
 
@@ -72,6 +75,9 @@ public class Main {
         for (Jhipster.Account user : users) {
             System.out.println("user : "+user);
         }
+
+        Jhipster.Account user = service.getUser("anonymousUser");
+        System.out.println("User : "+user);
 
         List<Jhipster.Log> logs = service.getLogs();
         System.out.println("Log list : ");
