@@ -115,14 +115,34 @@ public class JsonReader<T extends Message> extends AbstractReader<T> {
 
     @Override
     public List<T> getRepeated(String dataStr) {
-        JsonArray jsonArray = jsonParser.parse(new InputStreamReader(new ByteArrayInputStream(dataStr.getBytes()))).getAsJsonArray();
-        return getRepeated(jsonArray);
+        return getRepeated(dataStr.getBytes());
     }
 
     @Override
     public List<T> getRepeated(byte[] data) {
-        JsonArray jsonArray = jsonParser.parse(new InputStreamReader(new ByteArrayInputStream(data))).getAsJsonArray();
-        return getRepeated(jsonArray);
+        return getRepeated(new ByteArrayInputStream(data));
+    }
+
+    @Override
+    public Object getObjectOrList(InputStream input) {
+        JsonElement element = jsonParser.parse(new InputStreamReader(input));
+        if (element instanceof JsonArray) {
+            return getRepeated(element.getAsJsonArray());
+        } else if (element instanceof JsonObject) {
+            return getObject(element.getAsJsonObject());
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public Object getObjectOrList(String dataStr) {
+        return getObjectOrList(dataStr.getBytes());
+    }
+
+    @Override
+    public Object getObjectOrList(byte[] data) {
+        return getObjectOrList(new ByteArrayInputStream(data));
     }
 
 }

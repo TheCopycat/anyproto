@@ -22,6 +22,7 @@ import java.util.List;
 public class XmlReader<T extends Message> extends AbstractReader<T> {
 
     DocumentBuilder documentBuilder;
+
     public XmlReader(Class<T> clazz) {
         super(clazz);
 
@@ -87,6 +88,33 @@ public class XmlReader<T extends Message> extends AbstractReader<T> {
     @Override
     public List<T> getRepeated(byte[] data) {
         return getRepeated(new ByteArrayInputStream(data));
+    }
+
+    @Override
+    public Object getObjectOrList(InputStream input) {
+        try {
+            Node root = documentBuilder.parse(input).getDocumentElement();
+            if (root.getNodeName().equalsIgnoreCase(clazz.getSimpleName()+"s")) {
+                return getRepeated(root);
+            } else if (root.getNodeName().equalsIgnoreCase(clazz.getSimpleName())) {
+                return getObject(root);
+            }
+        } catch (SAXException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public Object getObjectOrList(String dataStr) {
+        return getObjectOrList(dataStr.getBytes());
+    }
+
+    @Override
+    public Object getObjectOrList(byte[] data) {
+        return getObjectOrList(new ByteArrayInputStream(data));
     }
 
     protected List<T> getRepeated(Node element) {

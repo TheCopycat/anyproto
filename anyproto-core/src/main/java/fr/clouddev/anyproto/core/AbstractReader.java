@@ -49,5 +49,11 @@ public abstract class AbstractReader<T extends Message> {
 
     public abstract List<T> getRepeated(byte[] data);
 
+    public abstract Object getObjectOrList(InputStream input);
+
+    public abstract Object getObjectOrList(String dataStr);
+
+    public abstract Object getObjectOrList(byte[] data);
+
 
 }

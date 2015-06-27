@@ -88,11 +88,11 @@ public class AnyProtoTest extends TestCase {
     
     @Test
     public void testConvertFromJson() {
-        User user = anyProto.fromJson(userJson);
+        User user = anyProto.fromJsonObject(userJson);
         assertNotSame(referenceUser,user);
         assertEquals(referenceUser, user);
 
-        TemplateMessage message = templateAnyProto.fromJson(templateJson);
+        TemplateMessage message = templateAnyProto.fromJsonObject(templateJson);
         System.out.println(message.toString());
         assertNotSame(referenceMessage, message);
     }
@@ -121,11 +121,11 @@ public class AnyProtoTest extends TestCase {
     
     @Test
     public void testConvertFromXml() {
-        User user = anyProto.fromXml(userXml);
+        User user = anyProto.fromXmlObject(userXml);
         String templateXml = templateAnyProto.toXml(referenceMessage);
         assertNotSame(referenceUser, user);
         assertEquals(referenceUser, user);
-        TemplateMessage message = templateAnyProto.fromXml(templateXml);
+        TemplateMessage message = templateAnyProto.fromXmlObject(templateXml);
         assertEquals(referenceMessage, message);
         assertEquals(templateXml, templateAnyProto.toXml(message));
         XmlReader<TemplateMessage> reader = new XmlReader<>(TemplateMessage.class);
@@ -147,21 +147,21 @@ public class AnyProtoTest extends TestCase {
     @Test
     public void testXmlUnknownElement() {
         String falseXml = "<item><email>totolol</email><value1>test</value1><value2></value2><subElem><age>23</age></subElem></item>";
-        User user = anyProto.fromXml(falseXml);
+        User user = anyProto.fromXmlObject(falseXml);
         assertEquals("totolol",user.getEmail());
     }
 
     @Test
     public void testJsonUnknownElement() {
         String fakeJson = "{fakeField:\"lol\",email:\"kjfdkjqsdkjdjklfs\",fakelem:{\"first\":1,second:true}}";
-        User user = anyProto.fromJson(fakeJson);
+        User user = anyProto.fromJsonObject(fakeJson);
         assertEquals("kjfdkjqsdkjdjklfs",user.getEmail());
     }
 
     @Test
     public void testXmlEscape(){
         String xml = "<User><email>&quot;&apos;&lt;&gt;&amp;</email></User>";
-        User userTest = anyProto.fromXml(xml);
+        User userTest = anyProto.fromXmlObject(xml);
         assertEquals("\"'<>&", userTest.getEmail());
         assertEquals(xml, anyProto.toXml(userTest));
     }
@@ -169,7 +169,7 @@ public class AnyProtoTest extends TestCase {
     @Test
     public void testJsonEscape() {
         String escapeJson = "{\"email\":\"\\\\and\\\"\"}";
-        User user = anyProto.fromJson(escapeJson);
+        User user = anyProto.fromJsonObject(escapeJson);
         assertEquals("\\and\"",user.getEmail());
 
         assertEquals(escapeJson, anyProto.toJsonString(user));

@@ -52,7 +52,12 @@ public class AnyProto<T extends Message> {
         return (T)newBuilder().mergeFrom(data).build();
     }
 
-    public T fromJson(String jsonString) {
+    public Object fromJson(String jsonString) {
+        JsonReader<T> reader = new JsonReader<>(clazz);
+        return reader.getObjectOrList(jsonString);
+    }
+
+    public T fromJsonObject(String jsonString) {
         JsonReader<T> reader = new JsonReader<>(clazz);
         return reader.getObject(jsonString);
     }
@@ -65,7 +70,11 @@ public class AnyProto<T extends Message> {
         return new XmlBuilder<T>(message).toXml();
     }
 
-    public T fromXml(String xmlString) {
+    public Object fromXml(String xmlString) {
+        return new XmlReader<>(clazz).getObjectOrList(xmlString);
+    }
+
+    public T fromXmlObject(String xmlString) {
         return new XmlReader<>(clazz).getObject(xmlString);
     }
 
