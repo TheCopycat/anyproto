@@ -15,7 +15,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -44,19 +46,26 @@ public class AnyProtoConverter implements Converter
 
     @Override
     public Object fromBody(TypedInput body, Type type) throws ConversionException {
-
-        if (!(type instanceof Class<?>)) {
-            throw new IllegalArgumentException("Expected a raw Class<?> but was " + type);
+        Class<? extends Message> c ;
+        if (type instanceof Class<?>) {
+            c = (Class<? extends Message>) type;
+        } else if (type instanceof ParameterizedType) {
+            if (List.class.equals(((ParameterizedType) type).getRawType())) {
+                c = (Class<? extends Message>) ((ParameterizedType) type).getActualTypeArguments()[0];
+            } else {
+                throw new IllegalArgumentException("Expected a List<Class<?>> but was " + type);
+            }
+        } else {
+            throw new IllegalArgumentException("Expected a raw Class<?> or List<Class<?>> but was " + type);
         }
 
-        Class<? extends Message> c = (Class<? extends Message>) type;
         AnyProto anyProto = new AnyProto(c);
         try {
             if (body.mimeType()!= null && body.mimeType().contains(MEDIA_TYPE_JSON)) {
-                return new JsonReader(c).getObject(body.in());
+                return new JsonReader(c).getObjectOrList(body.in());
             }
             if (body.mimeType()!= null && body.mimeType().contains(MEDIA_TYPE_XML)) {
-                return new XmlReader(c).getObject(body.in());
+                return new XmlReader(c).getObjectOrList(body.in());
             }
             if (body.mimeType()!= null && body.mimeType().contains(MEDIA_TYPE_PROTOBUF)) {
                 return anyProto.convert(body.in());
@@ -72,6 +81,8 @@ public class AnyProtoConverter implements Converter
         }
 
         return null;
+
+
     }
 
     @Override

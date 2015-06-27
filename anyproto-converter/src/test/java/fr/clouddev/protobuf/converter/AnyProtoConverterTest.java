@@ -9,6 +9,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Created by CopyCat on 27/04/15.
@@ -20,6 +22,9 @@ public class AnyProtoConverterTest extends TestCase {
     final static Test.User testUser = Test.User.newBuilder().setEmail("toto@toto.fr").setAge(12).build();
     final static String jsonTestUser = "{\"email\":\"toto@toto.fr\",\"age\":12}";
     final static String xmlTestUser = "<User><email>toto@toto.fr</email><age>12</age></User>";
+
+    final static String jsonTestUserList = "["+jsonTestUser+","+jsonTestUser+"]";
+    final static String xmlTestUserList ="<Users>"+xmlTestUser+xmlTestUser+"</Users>";
 
     @Override
     protected void setUp() throws Exception {
@@ -71,6 +76,21 @@ public class AnyProtoConverterTest extends TestCase {
 
     }
 
+    public void testReadJsonList() throws Exception {
+        List<Test.User> users = (List<Test.User>)converter.fromBody(new JsonListBody(), Test.User.class);
+        assertEquals(2,users.size());
+        for (Test.User user : users) {
+            assertEquals(testUser.getEmail(), user.getEmail());
+            assertEquals(testUser.getAge(), user.getAge());
+        }
+
+
+    }
+
+    public void testReadXmlList() throws Exception {
+
+    }
+
     private static class JsonBody implements TypedInput {
 
         String json = jsonTestUser;
@@ -91,9 +111,49 @@ public class AnyProtoConverterTest extends TestCase {
         }
     }
 
+    private static class JsonListBody implements TypedInput {
+
+        String json = jsonTestUserList;
+
+        @Override
+        public String mimeType() {
+            return "application/json";
+        }
+
+        @Override
+        public long length() {
+            return json.getBytes().length;
+        }
+
+        @Override
+        public InputStream in() throws IOException {
+            return new ByteArrayInputStream(json.getBytes());
+        }
+    }
+
     private static class XmlBody implements TypedInput {
 
         String xml = xmlTestUser;
+
+        @Override
+        public String mimeType() {
+            return "application/xml";
+        }
+
+        @Override
+        public long length() {
+            return xml.getBytes().length;
+        }
+
+        @Override
+        public InputStream in() throws IOException {
+            return new ByteArrayInputStream(xml.getBytes());
+        }
+    }
+
+    private static class XmlListBody implements TypedInput {
+
+        String xml = xmlTestUserList;
 
         @Override
         public String mimeType() {
