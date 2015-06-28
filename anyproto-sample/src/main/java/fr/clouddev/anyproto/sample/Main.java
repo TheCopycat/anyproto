@@ -63,7 +63,14 @@ public class Main {
                 .setEndpoint("http://localhost:8080")
                 .setConverter(new AnyProtoConverter())
                 .setRequestInterceptor(interceptor)
-                .setLogLevel(RestAdapter.LogLevel.FULL)
+                .setLogLevel(RestAdapter.LogLevel.BASIC)
+                .setLog(new RestAdapter.Log() {
+                    Logger restLogger = LoggerFactory.getLogger("retrofit");
+                    @Override
+                    public void log(String message) {
+                       restLogger.debug(message);
+                    }
+                })
                 .build();
         AccountService service = adapter.create(AccountService.class);
 
@@ -85,9 +92,7 @@ public class Main {
 
         List<Jhipster.Log> logs = service.getLogs();
         logger.info("Log list : ");
-        for (Jhipster.Log log : logs) {
-            logger.info("log : {}", log);
-        }
+        logger.info("Fetched {} logs.",logs.size());
 
         Jhipster.Log log = Jhipster.Log.newBuilder().setName("fr.clouddev").setLevel("DEBUG").build();
         Jhipster.Log resultLog = service.putLogs(log);
@@ -95,17 +100,10 @@ public class Main {
 
         List<Jhipster.Audit> allAudits = service.getAllAudits();
         logger.info("audits : ");
-        for (Jhipster.Audit audit : allAudits) {
-            logger.info("audit : {}", audit);
-            if (audit.hasData()) {
-                logger.info(audit.getData().getMessage());
-            }
-        }
+        logger.info("fetched {} audits.",allAudits.size());
 
         List<Jhipster.Audit> auditsByDate = service.getAuditsByDate("2015-06-22","2015-06-28");
         logger.info("Audits By Date : ");
-        for (Jhipster.Audit audit : auditsByDate) {
-            logger.info("audit : {}", audit);
-        }
+        logger.info("fetched {} audits.",auditsByDate.size());
     }
 }
