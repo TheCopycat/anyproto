@@ -45,14 +45,21 @@ public class JsonReader<T extends Message> extends AbstractReader<T> {
 
     @Override
     public T getObject(InputStream input) {
-        JsonObject jsonObject = jsonParser.parse(new InputStreamReader(input)).getAsJsonObject();
-        return getObject(jsonObject);
+        if (input != null) {
+            JsonObject jsonObject = jsonParser.parse(new InputStreamReader(input)).getAsJsonObject();
+            return getObject(jsonObject);
+        } else {
+            return null;
+        }
     }
 
     @Override
     public T getObject(String dataStr) {
-        JsonObject jsonObject = jsonParser.parse(dataStr).getAsJsonObject();
-        return getObject(jsonObject);
+        if (dataStr!=null) {
+            return getObject(dataStr.getBytes());
+        } else {
+            return null;
+        }
     }
 
     protected T getObject(JsonObject object) {
@@ -104,45 +111,71 @@ public class JsonReader<T extends Message> extends AbstractReader<T> {
 
     @Override
     public T getObject(byte[] data) {
-        JsonObject jsonObject = jsonParser.parse(new InputStreamReader(new ByteArrayInputStream(data))).getAsJsonObject();
-        return getObject(jsonObject);
+        if (data != null) {
+            return getObject(new ByteArrayInputStream(data));
+        } else {
+            return null;
+        }
     }
 
     public List<T> getRepeated(InputStream input) {
-        JsonArray jsonArray = jsonParser.parse(new InputStreamReader(input)).getAsJsonArray();
-        return getRepeated(jsonArray);
-    }
-
-    @Override
-    public List<T> getRepeated(String dataStr) {
-        return getRepeated(dataStr.getBytes());
-    }
-
-    @Override
-    public List<T> getRepeated(byte[] data) {
-        return getRepeated(new ByteArrayInputStream(data));
-    }
-
-    @Override
-    public Object getObjectOrList(InputStream input) {
-        JsonElement element = jsonParser.parse(new InputStreamReader(input));
-        if (element instanceof JsonArray) {
-            return getRepeated(element.getAsJsonArray());
-        } else if (element instanceof JsonObject) {
-            return getObject(element.getAsJsonObject());
+        if (input != null) {
+            JsonArray jsonArray = jsonParser.parse(new InputStreamReader(input)).getAsJsonArray();
+            return getRepeated(jsonArray);
         } else {
             return null;
         }
     }
 
     @Override
+    public List<T> getRepeated(String dataStr) {
+        if (dataStr != null) {
+            return getRepeated(dataStr.getBytes());
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public List<T> getRepeated(byte[] data) {
+        if (data != null) {
+            return getRepeated(new ByteArrayInputStream(data));
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public Object getObjectOrList(InputStream input) {
+        try {
+            JsonElement element = jsonParser.parse(new InputStreamReader(input));
+            if (element instanceof JsonArray) {
+                return getRepeated(element.getAsJsonArray());
+            } else if (element instanceof JsonObject) {
+                return getObject(element.getAsJsonObject());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
     public Object getObjectOrList(String dataStr) {
-        return getObjectOrList(dataStr.getBytes());
+        if (dataStr != null) {
+            return getObjectOrList(dataStr.getBytes());
+        } else {
+            return null;
+        }
     }
 
     @Override
     public Object getObjectOrList(byte[] data) {
-        return getObjectOrList(new ByteArrayInputStream(data));
+        if (data != null) {
+            return getObjectOrList(new ByteArrayInputStream(data));
+        } else {
+            return null;
+        }
     }
 
 }

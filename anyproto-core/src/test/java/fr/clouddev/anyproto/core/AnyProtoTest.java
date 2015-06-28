@@ -6,12 +6,14 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.protobuf.ByteString;
 import fr.clouddev.anyproto.core.builder.JsonBuilder;
+import fr.clouddev.anyproto.core.reader.JsonReader;
 import fr.clouddev.anyproto.core.reader.XmlReader;
 import junit.framework.TestCase;
 import fr.clouddev.anyproto.core.test.Test.*;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -95,6 +97,7 @@ public class AnyProtoTest extends TestCase {
         TemplateMessage message = templateAnyProto.fromJsonObject(templateJson);
         System.out.println(message.toString());
         assertNotSame(referenceMessage, message);
+        assertEquals(referenceMessage,message);
     }
 
     @Test
@@ -106,6 +109,90 @@ public class AnyProtoTest extends TestCase {
             assertNotSame(referenceUserList.get(i),users.get(i));
             assertEquals(referenceUserList.get(i), users.get(i));
         }
+    }
+
+    @Test
+    public void testConvertFromJsonObjectOrList() {
+        List<User> users = (List<User>) anyProto.fromJson(listUserJson);
+        assertNotSame(referenceUserList,users);
+        assertEquals(referenceUserList.size(),users.size());
+        for(int i=0; i< users.size();i++) {
+            assertNotSame(referenceUserList.get(i),users.get(i));
+            assertEquals(referenceUserList.get(i), users.get(i));
+        }
+
+        User user = (User) anyProto.fromJson(userJson);
+        assertNotSame(referenceUser,user);
+        assertEquals(referenceUser, user);
+
+        TemplateMessage message = (TemplateMessage)templateAnyProto.fromJson(templateJson);
+        System.out.println(message.toString());
+        assertNotSame(referenceMessage, message);
+        assertEquals(referenceMessage,message);
+    }
+
+    @Test
+    public void testConvertFromXmlObjectOrList() {
+        List<User> users = (List<User>) anyProto.fromXml(listUserXml);
+        assertNotSame(referenceUserList,users);
+        assertEquals(referenceUserList.size(),users.size());
+        for(int i=0; i< users.size();i++) {
+            assertNotSame(referenceUserList.get(i),users.get(i));
+            assertEquals(referenceUserList.get(i), users.get(i));
+        }
+
+        User user = (User) anyProto.fromXml(userXml);
+        assertNotSame(referenceUser,user);
+        assertEquals(referenceUser, user);
+
+        TemplateMessage message = (TemplateMessage)templateAnyProto.fromXml(templateXml);
+        System.out.println(message.toString());
+        assertNotSame(referenceMessage, message);
+        assertEquals(referenceMessage,message);
+    }
+
+    @Test
+    public void testNullJson() {
+        User user = (User)anyProto.fromJson(null);
+        assertNull(user);
+
+        user = anyProto.fromJsonObject(null);
+        assertNull(user);
+
+        assertNull(anyProto.fromJsonList(null));
+
+        assertNull(anyProto.fromJson(""));
+        assertNull(anyProto.fromJson(templateJson.substring(10)));
+
+        JsonReader jsonReader = new JsonReader<>(User.class);
+        assertNull(jsonReader.getObject((byte[])null));
+        assertNull(jsonReader.getObject((InputStream)null));
+        assertNull(jsonReader.getObjectOrList((byte[]) null));
+        assertNull(jsonReader.getObjectOrList((InputStream) null));
+        assertNull(jsonReader.getRepeated((byte[]) null));
+        assertNull(jsonReader.getRepeated((InputStream) null));
+    }
+
+    @Test
+    public void testNullXml() {
+        User user = (User)anyProto.fromXml(null);
+        assertNull(user);
+
+        user = anyProto.fromXmlObject(null);
+        assertNull(user);
+
+        assertNull(anyProto.fromXmlList(null));
+
+        assertNull(anyProto.fromXml(""));
+        assertNull(anyProto.fromXml(templateJson));
+
+        XmlReader xmlReader = new XmlReader(User.class);
+        assertNull(xmlReader.getObject((byte[]) null));
+        assertNull(xmlReader.getObject((InputStream) null));
+        assertNull(xmlReader.getObjectOrList((byte[]) null));
+        assertNull(xmlReader.getObjectOrList((InputStream) null));
+        assertNull(xmlReader.getRepeated((byte[]) null));
+        assertNull(xmlReader.getRepeated((InputStream) null));
     }
 
     @Test

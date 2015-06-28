@@ -40,10 +40,7 @@ public class XmlReader<T extends Message> extends AbstractReader<T> {
 
         try {
             return getObject(documentBuilder.parse(input).getDocumentElement());
-
-        } catch (SAXException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -52,29 +49,27 @@ public class XmlReader<T extends Message> extends AbstractReader<T> {
 
     @Override
     public T getObject(String dataStr) {
-
-        return getObject(dataStr.getBytes());
+        if (dataStr != null) {
+            return getObject(dataStr.getBytes());
+        } else {
+            return null;
+        }
     }
 
     @Override
     public T getObject(byte[] data) {
-        try {
-            return getObject(documentBuilder.parse(new ByteArrayInputStream(data)).getDocumentElement());
-        } catch (SAXException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (data != null) {
+            return getObject(new ByteArrayInputStream(data));
+        } else {
+            return null;
         }
-        return null;
     }
 
     @Override
     public List<T> getRepeated(InputStream input) {
         try {
             return getRepeated(documentBuilder.parse(input).getDocumentElement());
-        } catch (SAXException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
@@ -82,12 +77,20 @@ public class XmlReader<T extends Message> extends AbstractReader<T> {
 
     @Override
     public List<T> getRepeated(String dataStr) {
-        return getRepeated(dataStr.getBytes());
+        if (dataStr != null) {
+            return getRepeated(dataStr.getBytes());
+        } else {
+            return null;
+        }
     }
 
     @Override
     public List<T> getRepeated(byte[] data) {
-        return getRepeated(new ByteArrayInputStream(data));
+        if (data != null) {
+            return getRepeated(new ByteArrayInputStream(data));
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -99,9 +102,7 @@ public class XmlReader<T extends Message> extends AbstractReader<T> {
             } else if (root.getNodeName().equalsIgnoreCase(clazz.getSimpleName())) {
                 return getObject(root);
             }
-        } catch (SAXException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
@@ -109,12 +110,20 @@ public class XmlReader<T extends Message> extends AbstractReader<T> {
 
     @Override
     public Object getObjectOrList(String dataStr) {
-        return getObjectOrList(dataStr.getBytes());
+        if (dataStr != null) {
+            return getObjectOrList(dataStr.getBytes());
+        } else {
+            return null;
+        }
     }
 
     @Override
     public Object getObjectOrList(byte[] data) {
-        return getObjectOrList(new ByteArrayInputStream(data));
+        if (data != null) {
+            return getObjectOrList(new ByteArrayInputStream(data));
+        } else {
+            return null;
+        }
     }
 
     protected List<T> getRepeated(Node element) {
