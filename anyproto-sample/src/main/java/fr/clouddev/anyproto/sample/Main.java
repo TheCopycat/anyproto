@@ -2,6 +2,8 @@ package fr.clouddev.anyproto.sample;
 
 import fr.clouddev.anyproto.sample.proto.Jhipster;
 import fr.clouddev.protobuf.converter.AnyProtoConverter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
 import retrofit.http.*;
@@ -12,6 +14,8 @@ import java.util.List;
  * Created by CopyCat on 19/06/15.
  */
 public class Main {
+
+    static Logger logger = LoggerFactory.getLogger(Main.class);
 
     private interface AccountService {
         @GET("/api/account")
@@ -66,42 +70,42 @@ public class Main {
 
         Jhipster.Auth auth = service.authenticate("admin","admin");
         interceptor.setToken(auth.getToken());
-        System.out.println("auth : "+auth.toString());
+        logger.info("auth : {}", auth.toString());
         Jhipster.Account acc = service.getAccount();
-        System.out.println("acc : "+acc.toString());
+        logger.info("acc : {}", acc.toString());
 
         List<Jhipster.Account> users = service.getUsers();
-        System.out.println("User list");
+        logger.info("User list");
         for (Jhipster.Account user : users) {
-            System.out.println("user : "+user);
+            logger.info("user : {}", user);
         }
 
         Jhipster.Account user = service.getUser("anonymousUser");
-        System.out.println("User : "+user);
+        logger.info("User : {}", user);
 
         List<Jhipster.Log> logs = service.getLogs();
-        System.out.println("Log list : ");
+        logger.info("Log list : ");
         for (Jhipster.Log log : logs) {
-            System.out.println("log : "+log);
+            logger.info("log : {}", log);
         }
 
         Jhipster.Log log = Jhipster.Log.newBuilder().setName("fr.clouddev").setLevel("DEBUG").build();
         Jhipster.Log resultLog = service.putLogs(log);
-        System.out.println("Result log : " + resultLog);
+        logger.info("Result log : {}", resultLog);
 
         List<Jhipster.Audit> allAudits = service.getAllAudits();
-        System.out.println("audits : ");
+        logger.info("audits : ");
         for (Jhipster.Audit audit : allAudits) {
-            System.out.println("audit : "+audit);
+            logger.info("audit : {}", audit);
             if (audit.hasData()) {
-                System.out.println(audit.getData().getMessage());
+                logger.info(audit.getData().getMessage());
             }
         }
 
         List<Jhipster.Audit> auditsByDate = service.getAuditsByDate("2015-06-22","2015-06-28");
-        System.out.println("Audits By Date : ");
+        logger.info("Audits By Date : ");
         for (Jhipster.Audit audit : auditsByDate) {
-            System.out.println("audit : "+audit);
+            logger.info("audit : {}", audit);
         }
     }
 }

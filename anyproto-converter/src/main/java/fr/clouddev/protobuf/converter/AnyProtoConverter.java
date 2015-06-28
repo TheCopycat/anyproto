@@ -4,22 +4,19 @@ import com.google.protobuf.Message;
 import fr.clouddev.anyproto.core.AnyProto;
 import fr.clouddev.anyproto.core.reader.JsonReader;
 import fr.clouddev.anyproto.core.reader.XmlReader;
-import retrofit.RestAdapter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import retrofit.converter.ConversionException;
 import retrofit.converter.Converter;
 import retrofit.mime.TypedInput;
 import retrofit.mime.TypedOutput;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 /**
  * Created by CopyCat on 27/04/15.
@@ -30,7 +27,7 @@ public class AnyProtoConverter implements Converter
     public static final String MEDIA_TYPE_XML = "application/xml";
     public static final String MEDIA_TYPE_PROTOBUF = "application/x-protobuf";
 
-    private static final int BUFFER_SIZE = 4096;
+    private Logger logger = LoggerFactory.getLogger(getClass().getCanonicalName());
 
     private String sendingType = MEDIA_TYPE_JSON;
 
@@ -47,6 +44,7 @@ public class AnyProtoConverter implements Converter
     @Override
     public Object fromBody(TypedInput body, Type type) throws ConversionException {
         Class<? extends Message> c ;
+        logger.info("processing body MimeType:{} size:{} bytes of type {}",body.mimeType(),body.length(),type.getTypeName());
         if (type instanceof Class<?>) {
             c = (Class<? extends Message>) type;
         } else if (type instanceof ParameterizedType) {

@@ -5,6 +5,8 @@ import fr.clouddev.anyproto.core.builder.JsonBuilder;
 import fr.clouddev.anyproto.core.builder.XmlBuilder;
 import fr.clouddev.anyproto.core.reader.JsonReader;
 import fr.clouddev.anyproto.core.reader.XmlReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -18,6 +20,8 @@ public class AnyProto<T extends Message> {
 
     Class<T> clazz;
 
+    static Logger logger = LoggerFactory.getLogger(AnyProto.class);
+
     public AnyProto(Class<T> clazz) {
          this.clazz = clazz;
     }
@@ -26,7 +30,7 @@ public class AnyProto<T extends Message> {
         try {
             return (T.Builder)clazz.getMethod("newBuilder").invoke(null);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("could not instanciate new builder for type {}",clazz.getName());
             return null;
         }
     }

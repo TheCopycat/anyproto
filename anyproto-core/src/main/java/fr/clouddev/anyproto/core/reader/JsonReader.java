@@ -4,6 +4,8 @@ import com.google.gson.*;
 import com.google.protobuf.Message;
 import fr.clouddev.anyproto.core.AbstractReader;
 import fr.clouddev.anyproto.core.builder.ProtobufBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -36,6 +38,8 @@ public class JsonReader<T extends Message> extends AbstractReader<T> {
         }
     }
 
+    Logger logger = LoggerFactory.getLogger(getClass());
+
     JsonParser jsonParser = new JsonParser();
 
 
@@ -55,6 +59,7 @@ public class JsonReader<T extends Message> extends AbstractReader<T> {
 
     @Override
     public T getObject(String dataStr) {
+        logger.info("processing json string {}",dataStr);
         if (dataStr!=null) {
             return getObject(dataStr.getBytes());
         } else {
@@ -129,6 +134,7 @@ public class JsonReader<T extends Message> extends AbstractReader<T> {
 
     @Override
     public List<T> getRepeated(String dataStr) {
+        logger.info("processing json string {}",dataStr);
         if (dataStr != null) {
             return getRepeated(dataStr.getBytes());
         } else {
@@ -155,13 +161,14 @@ public class JsonReader<T extends Message> extends AbstractReader<T> {
                 return getObject(element.getAsJsonObject());
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Error while trying to process json",e);
         }
         return null;
     }
 
     @Override
     public Object getObjectOrList(String dataStr) {
+        logger.info("processing json string {}",dataStr);
         if (dataStr != null) {
             return getObjectOrList(dataStr.getBytes());
         } else {

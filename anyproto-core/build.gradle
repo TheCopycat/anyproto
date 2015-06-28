@@ -43,4 +43,5 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.11'
     compile group: 'com.google.protobuf', name: 'protobuf-java', version: '2.6.1'
     compile group: 'com.google.code.gson', name: 'gson', version: '2.3.1'
+    compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.1.3'
 }

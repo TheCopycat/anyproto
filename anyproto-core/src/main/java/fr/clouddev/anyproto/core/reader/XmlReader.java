@@ -3,15 +3,15 @@ package fr.clouddev.anyproto.core.reader;
 import com.google.protobuf.Message;
 import fr.clouddev.anyproto.core.AbstractReader;
 import fr.clouddev.anyproto.core.builder.ProtobufBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +21,7 @@ import java.util.List;
  */
 public class XmlReader<T extends Message> extends AbstractReader<T> {
 
+    Logger logger = LoggerFactory.getLogger(XmlReader.class);
     DocumentBuilder documentBuilder;
 
     public XmlReader(Class<T> clazz) {
@@ -156,10 +157,10 @@ public class XmlReader<T extends Message> extends AbstractReader<T> {
                         protobufBuilder.setField(node.getNodeName(), child.getNodeValue());
                         break;
                     default:
-                        System.out.println("not supported");
+                        logger.debug("not supported node type {}",child.getNodeType());
                 }
             } else {
-                System.out.println("no child for node : "+node.getNodeName());
+                logger.debug("no child for node : {}",node.getNodeName());
 
             }
         }
