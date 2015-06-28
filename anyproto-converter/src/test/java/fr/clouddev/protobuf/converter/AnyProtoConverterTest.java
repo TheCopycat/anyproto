@@ -1,5 +1,7 @@
 package fr.clouddev.protobuf.converter;
 
+import com.google.protobuf.CodedInputStream;
+import com.sun.tools.internal.xjc.reader.xmlschema.bindinfo.BIConversion;
 import fr.clouddev.protobuf.converter.proto.Test;
 import junit.framework.TestCase;
 import retrofit.mime.TypedInput;
@@ -9,8 +11,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collections;
-import java.util.List;
+import java.lang.reflect.Type;
+import java.util.*;
 
 /**
  * Created by CopyCat on 27/04/15.
@@ -32,6 +34,13 @@ public class AnyProtoConverterTest extends TestCase {
         converter = new AnyProtoConverter();
     }
 
+    public List<Test.User> dummyMethod () {
+        return null;
+    }
+
+    public Type getListType() throws Exception{
+       return getClass().getMethod("dummyMethod").getGenericReturnType();
+    }
 
     public void testGetBody() throws Exception {
 
@@ -77,7 +86,7 @@ public class AnyProtoConverterTest extends TestCase {
     }
 
     public void testReadJsonList() throws Exception {
-        List<Test.User> users = (List<Test.User>)converter.fromBody(new JsonListBody(), Test.User.class);
+        List<Test.User> users = (List<Test.User>)converter.fromBody(new JsonListBody(), getListType());
         assertEquals(2,users.size());
         for (Test.User user : users) {
             assertEquals(testUser.getEmail(), user.getEmail());
@@ -87,8 +96,34 @@ public class AnyProtoConverterTest extends TestCase {
 
     }
 
+    public void testReadProtobuf() throws Exception {
+        Test.User user = (Test.User) converter.fromBody(new ProtobufBody(),Test.User.class);
+        assertNotSame(testUser,user);
+        assertEquals(testUser,user);
+    }
+
     public void testReadXmlList() throws Exception {
 
+    }
+
+    private static class ProtobufBody implements  TypedInput {
+
+        Test.User user = testUser;
+
+        @Override
+        public String mimeType() {
+            return "application/x-protobuf";
+        }
+
+        @Override
+        public long length() {
+            return user.getSerializedSize();
+        }
+
+        @Override
+        public InputStream in() throws IOException {
+            return new ByteArrayInputStream(user.toByteArray());
+        }
     }
 
     private static class JsonBody implements TypedInput {
