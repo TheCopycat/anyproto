@@ -86,8 +86,8 @@ public class AnyProtoConverter implements Converter
     @Override
     public TypedOutput toBody(Object object) {
 
-        AnyProto anyProto = new AnyProto(object.getClass());
-        Message message = (Message)object;
+        final AnyProto anyProto = new AnyProto(object.getClass());
+        final Message message = (Message)object;
         return new TypedOutput() {
 
             @Override

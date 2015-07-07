@@ -1,7 +1,5 @@
 package fr.clouddev.protobuf.converter;
 
-import com.google.protobuf.CodedInputStream;
-import com.sun.tools.internal.xjc.reader.xmlschema.bindinfo.BIConversion;
 import fr.clouddev.protobuf.converter.proto.Test;
 import junit.framework.TestCase;
 import retrofit.mime.TypedInput;
