@@ -61,6 +61,16 @@ public class AnyProto<T extends Message> {
         return reader.getObjectOrList(jsonString);
     }
 
+    public Object fromJson(byte [] jsonBytes) {
+        JsonReader<T> reader = new JsonReader<>(clazz);
+        return reader.getObjectOrList(jsonBytes);
+    }
+
+    public Object fromJson(InputStream input) {
+        JsonReader<T> reader = new JsonReader<>(clazz);
+        return reader.getObjectOrList(input);
+    }
+
     public T fromJsonObject(String jsonString) {
         JsonReader<T> reader = new JsonReader<>(clazz);
         return reader.getObject(jsonString);
@@ -69,6 +79,8 @@ public class AnyProto<T extends Message> {
     public String toJsonString(T message) {
         return new JsonBuilder<T>(message).toJsonString();
     }
+
+    public String toJsonString(List<T> messages) { return new JsonBuilder<T>(messages).toJsonString(); }
 
     public String toXml(T message) {
         return new XmlBuilder<T>(message).toXml();

@@ -153,7 +153,7 @@ public class AnyProtoTest extends TestCase {
 
     @Test
     public void testNullJson() {
-        User user = (User)anyProto.fromJson(null);
+        User user = (User)anyProto.fromJson((String)null);
         assertNull(user);
 
         user = anyProto.fromJsonObject(null);

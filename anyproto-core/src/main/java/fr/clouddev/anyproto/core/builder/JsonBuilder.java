@@ -11,6 +11,7 @@ import com.google.protobuf.WireFormat;
 
 
 import java.util.Base64;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -19,11 +20,28 @@ import java.util.Map;
 public class JsonBuilder<T extends Message> {
 
     T message;
+    List<T> messages;
     Map<Descriptors.FieldDescriptor,Object> fields;
 
     public JsonBuilder(T message) {
         this.message = message;
         fields = this.message.getAllFields();
+    }
+
+    public JsonBuilder(List<T> messages) {
+        this.messages = messages;
+
+    }
+
+    public JsonArray toJsonArray() {
+        JsonArray result = new JsonArray();
+        for (T aMessage : messages) {
+            message = aMessage;
+            fields = message.getAllFields();
+            JsonObject item = toJson();
+            result.add(item);
+        }
+        return result;
     }
 
     public JsonObject toJson() {
@@ -46,7 +64,13 @@ public class JsonBuilder<T extends Message> {
     }
 
     public String toJsonString() {
-        return toJson().toString();
+        if (message != null) {
+            return toJson().toString();
+        } else if (messages != null) {
+            return toJsonArray().toString();
+        } else {
+            return null;
+        }
     }
 
     private JsonElement getJsonValue(Descriptors.FieldDescriptor field) {
