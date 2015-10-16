@@ -1,0 +1,5 @@
+package fr.clouddev.anyproto.core.utils;
+
+message ProtobufList {
+	repeated bytes list = 1;
+}

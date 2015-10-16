@@ -29,3 +29,7 @@ message TemplateMessage {
 	optional SubMessage subMessage = 7;
 	optional bytes byteMessage = 8;
 }
+
+message Users {
+	repeated User users = 1;
+}

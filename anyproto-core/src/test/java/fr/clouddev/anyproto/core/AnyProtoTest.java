@@ -62,8 +62,7 @@ public class AnyProtoTest extends TestCase {
             .build();
     
     @Test
-    public void testCreateConverter() {
-         AnyProto<User> anyProto = new AnyProto<>(User.class);
+    public void testCreateConverter()  {
     }
 
     @Test
@@ -86,6 +85,21 @@ public class AnyProtoTest extends TestCase {
         User userParsed3 = anyProto.convert(new String(referenceUser.toByteArray()));
         assertNotSame(referenceUser, userParsed3);
         assertEquals(referenceUser, userParsed3);
+    }
+
+    @Test
+    public void testConvertFromProtobufList() throws Exception {
+        AnyProto<User> anyProto = new AnyProto<>(User.class);
+        Users users =
+                Users.newBuilder()
+                        .addUsers(anyProto.fromJsonObject(userJson))
+                        .addUsers(anyProto.fromJsonObject(userJson))
+                        .build();
+        List<User> listOfUsers = anyProto.fromProtobufList(users.toByteArray());
+        assertEquals(2, users.getUsersCount());
+        assertEquals(referenceUser,listOfUsers.get(0));
+        assertEquals(referenceUser,listOfUsers.get(1));
+
     }
     
     @Test

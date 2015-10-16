@@ -1,16 +1,19 @@
 package fr.clouddev.anyproto.core;
 
+import com.google.protobuf.ByteString;
 import com.google.protobuf.Message;
 import fr.clouddev.anyproto.core.builder.JsonBuilder;
 import fr.clouddev.anyproto.core.builder.XmlBuilder;
 import fr.clouddev.anyproto.core.reader.JsonReader;
 import fr.clouddev.anyproto.core.reader.XmlReader;
+import fr.clouddev.anyproto.core.utils.Generic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -54,6 +57,15 @@ public class AnyProto<T extends Message> {
 
     public T convert(byte[] data) throws IOException {
         return (T)newBuilder().mergeFrom(data).build();
+    }
+
+    public List<T> fromProtobufList(byte[] data) throws IOException {
+        Generic.ProtobufList protobufList = Generic.ProtobufList.newBuilder().mergeFrom(data).build();
+        List<T> result = new ArrayList<>();
+        for (ByteString bs : protobufList.getListList()) {
+            result.add((T) newBuilder().mergeFrom(bs.toByteArray()).build());
+        }
+        return result;
     }
 
     public Object fromJson(String jsonString) {
