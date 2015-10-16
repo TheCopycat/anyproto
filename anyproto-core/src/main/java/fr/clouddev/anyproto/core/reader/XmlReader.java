@@ -21,7 +21,7 @@ import java.util.List;
  */
 public class XmlReader<T extends Message> extends AbstractReader<T> {
 
-    Logger logger = LoggerFactory.getLogger(XmlReader.class);
+    static Logger logger = LoggerFactory.getLogger(XmlReader.class);
     DocumentBuilder documentBuilder;
 
     public XmlReader(Class<T> clazz) {

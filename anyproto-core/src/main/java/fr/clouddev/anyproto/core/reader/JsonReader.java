@@ -3,6 +3,7 @@ package fr.clouddev.anyproto.core.reader;
 import com.google.gson.*;
 import com.google.protobuf.Message;
 import fr.clouddev.anyproto.core.AbstractReader;
+import fr.clouddev.anyproto.core.builder.JsonBuilder;
 import fr.clouddev.anyproto.core.builder.ProtobufBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +39,7 @@ public class JsonReader<T extends Message> extends AbstractReader<T> {
         }
     }
 
-    Logger logger = LoggerFactory.getLogger(getClass());
+    static Logger logger = LoggerFactory.getLogger(JsonBuilder.class);
 
     JsonParser jsonParser = new JsonParser();
 
