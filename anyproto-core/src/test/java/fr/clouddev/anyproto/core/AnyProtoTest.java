@@ -89,7 +89,6 @@ public class AnyProtoTest extends TestCase {
 
     @Test
     public void testConvertFromProtobufList() throws Exception {
-        AnyProto<User> anyProto = new AnyProto<>(User.class);
         Users users =
                 Users.newBuilder()
                         .addUsers(anyProto.fromJsonObject(userJson))
@@ -100,6 +99,14 @@ public class AnyProtoTest extends TestCase {
         assertEquals(referenceUser,listOfUsers.get(0));
         assertEquals(referenceUser,listOfUsers.get(1));
 
+    }
+
+    @Test
+    public void testConvertToProtobufList() throws Exception {
+        Users users = Users.parseFrom(anyProto.toProtobufList(referenceUserList));
+        assertEquals(2,users.getUsersCount());
+        assertEquals(referenceUser,users.getUsers(0));
+        assertEquals(referenceUser,users.getUsers(1));
     }
     
     @Test

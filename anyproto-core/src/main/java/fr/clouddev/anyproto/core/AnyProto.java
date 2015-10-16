@@ -68,6 +68,14 @@ public class AnyProto<T extends Message> {
         return result;
     }
 
+    public byte[] toProtobufList(List<T> list) {
+        Generic.ProtobufList.Builder protobufList = Generic.ProtobufList.newBuilder();
+        for (T item : list) {
+            protobufList.addList(ByteString.copyFrom(item.toByteArray()));
+        }
+        return protobufList.build().toByteArray();
+    }
+
     public Object fromJson(String jsonString) {
         JsonReader<T> reader = new JsonReader<>(clazz);
         return reader.getObjectOrList(jsonString);
