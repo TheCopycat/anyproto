@@ -95,7 +95,7 @@ public class AnyProtoTest extends TestCase {
                         .addUsers(anyProto.fromJsonObject(userJson))
                         .build();
         List<User> listOfUsers = anyProto.fromProtobufList(users.toByteArray());
-        assertEquals(2, users.getUsersCount());
+        assertEquals(2, listOfUsers.size());
         assertEquals(referenceUser,listOfUsers.get(0));
         assertEquals(referenceUser,listOfUsers.get(1));
 
@@ -218,11 +218,11 @@ public class AnyProtoTest extends TestCase {
 
     @Test
     public void testConvertToJson() {
-        String jsonString = anyProto.toJsonString(referenceUser);
+        String jsonString = anyProto.toJson(referenceUser);
         JsonObject json = new JsonBuilder<User>(referenceUser).toJson();
         assertEquals(userJson, jsonString);
         System.out.println(gson.toJson(new JsonParser().parse(jsonString)));
-        String templateJsonString = templateAnyProto.toJsonString(referenceMessage);
+        String templateJsonString = templateAnyProto.toJson(referenceMessage);
         assertEquals(templateJson, templateJsonString);
         System.out.println(gson.toJson(new JsonParser().parse(templateJsonString)));
     }
@@ -280,7 +280,7 @@ public class AnyProtoTest extends TestCase {
         User user = anyProto.fromJsonObject(escapeJson);
         assertEquals("\\and\"",user.getEmail());
 
-        assertEquals(escapeJson, anyProto.toJsonString(user));
+        assertEquals(escapeJson, anyProto.toJson(user));
     }
 
     @Test

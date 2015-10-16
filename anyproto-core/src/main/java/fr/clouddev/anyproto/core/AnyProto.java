@@ -5,6 +5,7 @@ import com.google.protobuf.Message;
 import fr.clouddev.anyproto.core.builder.JsonBuilder;
 import fr.clouddev.anyproto.core.builder.XmlBuilder;
 import fr.clouddev.anyproto.core.reader.JsonReader;
+import fr.clouddev.anyproto.core.reader.ProtobufReader;
 import fr.clouddev.anyproto.core.reader.XmlReader;
 import fr.clouddev.anyproto.core.utils.Generic;
 import org.slf4j.Logger;
@@ -25,8 +26,15 @@ public class AnyProto<T extends Message> {
 
     static Logger logger = LoggerFactory.getLogger(AnyProto.class);
 
+    private XmlReader<T> xmlReader;
+    private JsonReader<T> jsonReader;
+    private ProtobufReader<T> protobufReader;
+
     public AnyProto(Class<T> clazz) {
-         this.clazz = clazz;
+        this.clazz = clazz;
+        xmlReader = new XmlReader<>(clazz);
+        jsonReader = new JsonReader<>(clazz);
+        protobufReader = new ProtobufReader<>(clazz);
     }
 
     public T.Builder newBuilder() {
@@ -55,18 +63,9 @@ public class AnyProto<T extends Message> {
         return convert(data);
     }
 
-    public T convert(byte[] data) throws IOException {
-        return (T)newBuilder().mergeFrom(data).build();
-    }
+    public T convert(byte[] data) throws IOException { return (T)newBuilder().mergeFrom(data).build(); }
 
-    public List<T> fromProtobufList(byte[] data) throws IOException {
-        Generic.ProtobufList protobufList = Generic.ProtobufList.newBuilder().mergeFrom(data).build();
-        List<T> result = new ArrayList<>();
-        for (ByteString bs : protobufList.getListList()) {
-            result.add((T) newBuilder().mergeFrom(bs.toByteArray()).build());
-        }
-        return result;
-    }
+    public List<T> fromProtobufList(byte[] data) throws IOException { return protobufReader.getRepeated(data); }
 
     public byte[] toProtobufList(List<T> list) {
         Generic.ProtobufList.Builder protobufList = Generic.ProtobufList.newBuilder();
@@ -76,51 +75,35 @@ public class AnyProto<T extends Message> {
         return protobufList.build().toByteArray();
     }
 
-    public Object fromJson(String jsonString) {
-        JsonReader<T> reader = new JsonReader<>(clazz);
-        return reader.getObjectOrList(jsonString);
-    }
+    //Json Conversions
+    public Object fromJson(String jsonString) { return jsonReader.getObjectOrList(jsonString); }
 
-    public Object fromJson(byte [] jsonBytes) {
-        JsonReader<T> reader = new JsonReader<>(clazz);
-        return reader.getObjectOrList(jsonBytes);
-    }
+    public Object fromJson(byte [] jsonBytes) { return jsonReader.getObjectOrList(jsonBytes); }
 
-    public Object fromJson(InputStream input) {
-        JsonReader<T> reader = new JsonReader<>(clazz);
-        return reader.getObjectOrList(input);
-    }
+    public Object fromJson(InputStream input) { return jsonReader.getObjectOrList(input); }
 
-    public T fromJsonObject(String jsonString) {
-        JsonReader<T> reader = new JsonReader<>(clazz);
-        return reader.getObject(jsonString);
-    }
+    public T fromJsonObject(String jsonString) { return jsonReader.getObject(jsonString); }
 
-    public String toJsonString(T message) {
+    public List<T> fromJsonList(String jsonString) { return jsonReader.getRepeated(jsonString); }
+
+    public String toJson(T message) {
         return new JsonBuilder<T>(message).toJsonString();
     }
 
-    public String toJsonString(List<T> messages) { return new JsonBuilder<T>(messages).toJsonString(); }
+    public String toJson(List<T> messages) { return new JsonBuilder<T>(messages).toJsonString(); }
 
+    //Xml Conversions
     public String toXml(T message) {
         return new XmlBuilder<T>(message).toXml();
     }
 
     public Object fromXml(String xmlString) {
-        return new XmlReader<>(clazz).getObjectOrList(xmlString);
+        return xmlReader.getObjectOrList(xmlString);
     }
 
     public T fromXmlObject(String xmlString) {
-        return new XmlReader<>(clazz).getObject(xmlString);
+        return xmlReader.getObject(xmlString);
     }
 
-    public List<T> fromJsonList(String jsonString) {
-        JsonReader<T> reader = new JsonReader<>(clazz);
-        return reader.getRepeated(jsonString);
-    }
-
-    public List<T> fromXmlList(String xmlString) {
-        XmlReader<T> reader = new XmlReader<>(clazz);
-        return reader.getRepeated(xmlString);
-    }
+    public List<T> fromXmlList(String xmlString) { return xmlReader.getRepeated(xmlString); }
 }

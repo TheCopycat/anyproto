@@ -110,6 +110,8 @@ public class ProtobufBuilder<T extends Message> {
         return null;
     }
 
+    public T.Builder getBuilder() { return builder;}
+
     public T getObject() {
         return (T)builder.build();
     }
