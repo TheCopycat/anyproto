@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.protobuf.ByteString;
+import java.util.Base64;
 import fr.clouddev.anyproto.core.builder.JsonBuilder;
 import fr.clouddev.anyproto.core.reader.JsonReader;
 import fr.clouddev.anyproto.core.reader.XmlReader;
@@ -74,15 +75,15 @@ public class AnyProtoTest extends TestCase {
     public void testConvertFromProtobuf() throws Exception {
         
 
-        User userParsed = anyProto.convert(referenceUser.toByteArray());
+        User userParsed = anyProto.fromProtobuf(referenceUser.toByteArray());
         assertNotSame(referenceUser, userParsed);
         assertEquals(referenceUser,userParsed);
 
-        User userParsed2 = anyProto.convert(new ByteArrayInputStream(referenceUser.toByteArray()));
+        User userParsed2 = anyProto.fromProtobuf(new ByteArrayInputStream(referenceUser.toByteArray()));
         assertNotSame(referenceUser, userParsed2);
         assertEquals(referenceUser,userParsed2);
 
-        User userParsed3 = anyProto.convert(new String(referenceUser.toByteArray()));
+        User userParsed3 = anyProto.fromProtobuf(Base64.getEncoder().encodeToString(referenceUser.toByteArray()));
         assertNotSame(referenceUser, userParsed3);
         assertEquals(referenceUser, userParsed3);
     }
@@ -103,7 +104,7 @@ public class AnyProtoTest extends TestCase {
 
     @Test
     public void testConvertToProtobufList() throws Exception {
-        Users users = Users.parseFrom(anyProto.toProtobufList(referenceUserList));
+        Users users = Users.parseFrom(anyProto.toProtobuf(referenceUserList));
         assertEquals(2,users.getUsersCount());
         assertEquals(referenceUser,users.getUsers(0));
         assertEquals(referenceUser,users.getUsers(1));

@@ -29,7 +29,7 @@ public class ProtobufReader<T extends Message> extends AbstractReader<T> {
         try {
             return (T)newBuilder().getBuilder().mergeFrom(input).build();
         } catch (Exception e) {
-            logger.error("could not parse message from input stream because : "+e.getMessage());
+            logger.error("could not parse message from input stream because : "+e.getMessage(),e);
         }
         return null;
     }

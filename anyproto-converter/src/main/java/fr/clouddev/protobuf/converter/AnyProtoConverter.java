@@ -66,7 +66,7 @@ public class AnyProtoConverter implements Converter
                 return new XmlReader(c).getObjectOrList(body.in());
             }
             if (body.mimeType()!= null && body.mimeType().contains(MEDIA_TYPE_PROTOBUF)) {
-                return anyProto.convert(body.in());
+                return anyProto.fromProtobuf(body.in());
             }
         } catch (Exception ioe) {
             ioe.printStackTrace();
@@ -104,7 +104,7 @@ public class AnyProtoConverter implements Converter
             public long length() {
                 switch(sendingType) {
                     case MEDIA_TYPE_JSON:
-                        return anyProto.toJsonString(message).length();
+                        return anyProto.toJson(message).length();
                     case MEDIA_TYPE_PROTOBUF:
                         return message.getSerializedSize();
                     case MEDIA_TYPE_XML:
@@ -118,7 +118,7 @@ public class AnyProtoConverter implements Converter
             public void writeTo(OutputStream out) throws IOException {
                 switch (sendingType) {
                     case MEDIA_TYPE_JSON:
-                        out.write(anyProto.toJsonString(message).getBytes("UTF-8"));
+                        out.write(anyProto.toJson(message).getBytes("UTF-8"));
                         break;
                     case MEDIA_TYPE_PROTOBUF:
                         out.write(message.toByteArray());

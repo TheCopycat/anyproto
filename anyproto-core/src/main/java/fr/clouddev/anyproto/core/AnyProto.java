@@ -46,34 +46,109 @@ public class AnyProto<T extends Message> {
         }
     }
 
-    public T convert(String input) throws IOException {
-        return convert(input.getBytes());
+    public T getObjectFromAny(String str) {
+        T result = protobufReader.getObject(str);
+        if (result != null) return result;
+        result = jsonReader.getObject(str);
+        if (result != null) return result;
+        result = xmlReader.getObject(str);
+        return result;
     }
 
-    public T convert(InputStream source) throws IOException {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream(source.available());
-        int b;
-        while ((b = source.read()) != -1) {
-            baos.write(b);
-        }
-        byte[] data = baos.toByteArray();
-        //TODO detect type of data
-        //Assuming it is protobuf
-
-        return convert(data);
+    public T getObjectFromAny(byte[] data) {
+        T result = protobufReader.getObject(data);
+        if (result != null) return result;
+        result = jsonReader.getObject(data);
+        if (result != null) return result;
+        result = xmlReader.getObject(data);
+        return result;
     }
 
-    public T convert(byte[] data) throws IOException { return (T)newBuilder().mergeFrom(data).build(); }
+    public T getObjectFromAny(InputStream input) {
+        T result = protobufReader.getObject(input);
+        if (result != null) return result;
+        result = jsonReader.getObject(input);
+        if (result != null) return result;
+        result = xmlReader.getObject(input);
+        return result;
+    }
+
+    public List<T> getListFromAny(String str) {
+        List<T> result = protobufReader.getRepeated(str);
+        if (result != null) return result;
+        result = jsonReader.getRepeated(str);
+        if (result != null) return result;
+        result = xmlReader.getRepeated(str);
+        return result;
+    }
+
+    public List<T> getListFromAny(byte[] data) {
+        List<T> result = protobufReader.getRepeated(data);
+        if (result != null) return result;
+        result = jsonReader.getRepeated(data);
+        if (result != null) return result;
+        result = xmlReader.getRepeated(data);
+        return result;
+    }
+
+    public List<T> getListFromAny(InputStream input) {
+        List<T> result = protobufReader.getRepeated(input);
+        if (result != null) return result;
+        result = jsonReader.getRepeated(input);
+        if (result != null) return result;
+        result = xmlReader.getRepeated(input);
+        return result;
+    }
+
+    public Object getObjectOrListFromAny(String str) {
+        Object result = protobufReader.getObjectOrList(str);
+        if (result != null) return result;
+        result = jsonReader.getObjectOrList(str);
+        if (result != null) return result;
+        result = xmlReader.getObjectOrList(str);
+        return result;
+    }
+
+    public Object getObjectOrListFromAny(byte[] source) {
+        Object result = protobufReader.getObjectOrList(source);
+        if (result != null) return result;
+        result = jsonReader.getObjectOrList(source);
+        if (result != null) return result;
+        result = xmlReader.getObjectOrList(source);
+        return result;
+    }
+
+    public Object getObjectOrListFromAny(InputStream source) {
+        Object result = protobufReader.getObjectOrList(source);
+        if (result != null) return result;
+        result = jsonReader.getObjectOrList(source);
+        if (result != null) return result;
+        result = xmlReader.getObjectOrList(source);
+        return result;
+    }
+
+
+    public List<T> fromProtobufList(String str) throws IOException { return protobufReader.getRepeated(str); }
 
     public List<T> fromProtobufList(byte[] data) throws IOException { return protobufReader.getRepeated(data); }
 
-    public byte[] toProtobufList(List<T> list) {
+    public List<T> fromProtobufList(InputStream input) throws IOException { return protobufReader.getRepeated(input); }
+
+    public T fromProtobuf(String str) throws IOException { return protobufReader.getObject(str); }
+
+    public T fromProtobuf(byte[] data) throws IOException { return protobufReader.getObject(data); }
+
+    public T fromProtobuf(InputStream input) throws IOException { return protobufReader.getObject(input); }
+
+    public byte[] toProtobuf(List<T> list) {
         Generic.ProtobufList.Builder protobufList = Generic.ProtobufList.newBuilder();
         for (T item : list) {
             protobufList.addList(ByteString.copyFrom(item.toByteArray()));
         }
         return protobufList.build().toByteArray();
     }
+
+    public byte[] toProtobuf(T message) { return message.toByteArray(); }
 
     //Json Conversions
     public Object fromJson(String jsonString) { return jsonReader.getObjectOrList(jsonString); }
