@@ -44,7 +44,7 @@ public class AnyProtoConverter implements Converter
     @Override
     public Object fromBody(TypedInput body, Type type) throws ConversionException {
         Class<? extends Message> c ;
-        logger.info("processing body MimeType:{} size:{} bytes of type {}",body.mimeType(),body.length(),type.getTypeName());
+        logger.info("processing body MimeType:{} size:{} bytes of type {}",body.mimeType(),body.length(),type.toString());
         if (type instanceof Class<?>) {
             c = (Class<? extends Message>) type;
         } else if (type instanceof ParameterizedType) {
