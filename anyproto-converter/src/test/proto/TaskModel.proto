@@ -17,3 +17,7 @@ message Project {
 	repeated Task tasks = 3;
 	optional User owner = 4;
 }
+
+message Projects {
+	repeated Project projects = 1;
+}
