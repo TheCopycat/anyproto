@@ -1,7 +1,7 @@
 package fr.clouddev.anyproto.core;
 
-import com.sun.org.apache.xml.internal.security.utils.Base64;
 import fr.clouddev.anyproto.core.test.Test.User;
+import org.apache.commons.codec.binary.Base64;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
@@ -25,7 +25,7 @@ public class ProtobufTests extends TestValues {
         assertNotSame(referenceUser, userParsed2);
         assertEquals(referenceUser,userParsed2);
 
-        User userParsed3 = anyProto.fromProtobuf(Base64.encode(referenceUser.toByteArray()));
+        User userParsed3 = anyProto.fromProtobuf(Base64.encodeBase64String(referenceUser.toByteArray()));
         assertNotSame(referenceUser, userParsed3);
         assertEquals(referenceUser, userParsed3);
     }

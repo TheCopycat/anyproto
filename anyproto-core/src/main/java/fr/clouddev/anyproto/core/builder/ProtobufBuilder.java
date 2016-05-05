@@ -1,7 +1,11 @@
 package fr.clouddev.anyproto.core.builder;
 
-import com.google.protobuf.*;
-import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
+import com.google.protobuf.ByteString;
+import com.google.protobuf.Descriptors;
+import com.google.protobuf.Message;
+import com.google.protobuf.WireFormat;
+import org.apache.commons.codec.binary.Base64;
+
 
 import java.util.HashMap;
 import java.util.Map;
@@ -87,8 +91,7 @@ public class ProtobufBuilder<T extends Message> {
                 //Assuming we have a correct object
                 return value;
             case BYTES:
-                return ByteString.copyFrom(Base64.decode(value + ""));
-
+                return ByteString.copyFrom(Base64.decodeBase64((value + "")));
             case ENUM:
                 try {
                     int intValue = Integer.parseInt(value+"");

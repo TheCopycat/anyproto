@@ -3,10 +3,10 @@ package fr.clouddev.anyproto.core;
 import fr.clouddev.anyproto.core.builder.ProtobufBuilder;
 import fr.clouddev.anyproto.core.test.Test.*;
 import junit.framework.TestCase;
+import org.apache.commons.codec.binary.Base64;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Base64;
 
 /**
  * Created by CopyCat on 30/04/15.
@@ -80,7 +80,7 @@ public class ProtobufBuilderTest extends TestCase {
     @Test
     public void testByteElement() {
         byte[] data = new byte[]{0x00,0x04,0x08,0x0C,0x10};
-        String dataString = Base64.getEncoder().encodeToString(data);
+        String dataString = Base64.encodeBase64String(data);
         builder.setField("byteMessage", dataString);
         TemplateMessage message = builder.getObject();
         byte[] byteMessage = message.getByteMessage().toByteArray();

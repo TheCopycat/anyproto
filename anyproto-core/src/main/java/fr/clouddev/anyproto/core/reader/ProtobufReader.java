@@ -2,10 +2,9 @@ package fr.clouddev.anyproto.core.reader;
 
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Message;
-import com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingException;
-import com.sun.org.apache.xml.internal.security.utils.Base64;
 import fr.clouddev.anyproto.core.AbstractReader;
 import fr.clouddev.anyproto.core.utils.Generic;
+import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,14 +36,7 @@ public class ProtobufReader<T extends Message> extends AbstractReader<T> {
 
     @Override
     public T getObject(String dataStr) {
-
-        try {
-            return getObject(Base64.decode(dataStr));
-        } catch (Base64DecodingException e) {
-            logger.error("could not parse protobuf base64 string because "+e.getMessage());
-        }
-        return null;
-
+        return getObject(Base64.decodeBase64(dataStr));
     }
 
     @Override
@@ -69,12 +61,7 @@ public class ProtobufReader<T extends Message> extends AbstractReader<T> {
 
     @Override
     public List<T> getRepeated(String dataStr) {
-        try {
-            return getRepeated(Base64.decode(dataStr));
-        } catch (Base64DecodingException e) {
-            logger.error("could not decode base64 string because : "+e.getMessage());
-        }
-        return null;
+        return getRepeated(Base64.decodeBase64(dataStr));
     }
 
     @Override
@@ -93,12 +80,7 @@ public class ProtobufReader<T extends Message> extends AbstractReader<T> {
 
     @Override
     public Object getObjectOrList(String dataStr) {
-        try {
-            return getObjectOrList(Base64.decode(dataStr));
-        } catch (Base64DecodingException e) {
-            logger.error("Could not decode base 64 string because : "+e.getMessage());
-        }
-        return null;
+        return getObjectOrList(Base64.decodeBase64(dataStr));
     }
 
     @Override

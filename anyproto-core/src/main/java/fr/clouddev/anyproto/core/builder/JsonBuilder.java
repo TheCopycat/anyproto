@@ -8,9 +8,9 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.Descriptors;
 import com.google.protobuf.Message;
 import com.google.protobuf.WireFormat;
+import org.apache.commons.codec.binary.Base64;
 
 
-import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
@@ -102,7 +102,7 @@ public class JsonBuilder<T extends Message> {
                 return parser.toJson();
 
             case BYTES:
-                String data = Base64.getEncoder().encodeToString(((ByteString)value).toByteArray());
+                String data = Base64.encodeBase64String(((ByteString) value).toByteArray());
                 return new JsonPrimitive(data);
 
             case ENUM:

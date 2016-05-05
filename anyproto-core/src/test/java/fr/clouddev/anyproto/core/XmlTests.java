@@ -59,7 +59,7 @@ public class XmlTests extends TestValues {
     }
 
     @Test
-    public void testConvertFromXml() {
+    public void testConvertFromXml() throws Exception {
         User user = anyProto.fromXmlObject(userXml);
         String templateXml = templateAnyProto.toXml(referenceMessage);
         assertNotSame(referenceUser, user);
@@ -68,7 +68,7 @@ public class XmlTests extends TestValues {
         assertEquals(referenceMessage, message);
         assertEquals(templateXml, templateAnyProto.toXml(message));
         XmlReader<TemplateMessage> reader = new XmlReader<>(TemplateMessage.class);
-        message = reader.getObject(new ByteArrayInputStream(templateXml.getBytes()));
+        message = reader.getObject(new ByteArrayInputStream(templateXml.getBytes("UTF-8")));
         assertEquals(referenceMessage,message);
     }
 

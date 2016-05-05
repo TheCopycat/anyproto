@@ -13,6 +13,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,7 +52,11 @@ public class XmlReader<T extends Message> extends AbstractReader<T> {
     @Override
     public T getObject(String dataStr) {
         if (dataStr != null) {
-            return getObject(dataStr.getBytes());
+            try {
+                return getObject(dataStr.getBytes("UTF-8"));
+            } catch (UnsupportedEncodingException e) {
+                return null;
+            }
         } else {
             return null;
         }
@@ -79,7 +84,11 @@ public class XmlReader<T extends Message> extends AbstractReader<T> {
     @Override
     public List<T> getRepeated(String dataStr) {
         if (dataStr != null) {
-            return getRepeated(dataStr.getBytes());
+            try {
+                return getRepeated(dataStr.getBytes("UTF-8"));
+            } catch (UnsupportedEncodingException e) {
+                return null;
+            }
         } else {
             return null;
         }
@@ -112,7 +121,11 @@ public class XmlReader<T extends Message> extends AbstractReader<T> {
     @Override
     public Object getObjectOrList(String dataStr) {
         if (dataStr != null) {
-            return getObjectOrList(dataStr.getBytes());
+            try {
+                return getObjectOrList(dataStr.getBytes("UTF-8"));
+            } catch (UnsupportedEncodingException e) {
+                return null;
+            }
         } else {
             return null;
         }
